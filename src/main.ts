@@ -32,6 +32,8 @@ export async function run(): Promise<void> {
     const commitSha = github.context.sha;
     const owner = github.context.repo.owner;
     const pullRequestNumber = github.context.payload.pull_request?.number;
+    core.debug(`Event Name: ${github.context.eventName}`);
+    core.debug(`Payload: ${JSON.stringify(github.context.payload)}`);
     const ref =
       github.context.eventName === "pull_request" ||
       github.context.eventName === "pull_request_target"
