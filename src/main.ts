@@ -26,10 +26,9 @@ export async function run(): Promise<void> {
     if (testUrl) core.debug(`Test URL: ${testUrl}`);
     if (environmentId) core.debug(`Environment ID: ${environmentId}`);
 
-    const body: { [key: string]: string } = {};
+    const body: Record<string, string> = {};
     if (testUrl) body.entrypointUrl = testUrl;
     if (environmentId) body.environmentId = environmentId;
-
     core.debug(`Request body: ${JSON.stringify(body)}`);
 
     const response = await fetch(PLAYMATIC_API_ENDPOINT, {
