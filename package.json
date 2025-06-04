@@ -1,7 +1,7 @@
 {
   "name": "playmate-action",
   "description": "Playmate GitHub Action to run app play test",
-  "version": "v0.0.1",
+  "version": "v0.0.2",
   "type": "module",
   "private": true,
   "homepage": "https://github.com/actions/typescript-action",
