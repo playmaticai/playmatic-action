@@ -1,8 +1,7 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "playmate-action",
+  "description": "Playmate GitHub Action to run app play test",
   "version": "0.0.0",
-  "author": "",
   "type": "module",
   "private": true,
   "homepage": "https://github.com/actions/typescript-action",
@@ -38,7 +37,7 @@
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@types/node": "^20.17.48",
+    "@types/node": "^22.15.29",
     "rollup": "^4.41.0",
     "typescript": "^5.8.3"
   },
@@ -47,5 +46,6 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": ["@biomejs/biome"]
-  }
+  },
+  "packageManager": "pnpm@10.3.0"
 }
