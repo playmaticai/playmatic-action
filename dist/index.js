@@ -31272,7 +31272,7 @@ async function run() {
             body.pullRequestNumber = pullRequestNumber;
         if (ref)
             body.ref = ref;
-        coreExports.debug(`Request body: ${JSON.stringify(body)}`);
+        coreExports.debug(`Request Body: ${JSON.stringify(body)}`);
         const response = await fetch(PLAYMATIC_API_ENDPOINT, {
             method: "POST",
             headers: {
