@@ -22,18 +22,18 @@ export async function run(): Promise<void> {
       return;
     }
 
-    core.debug("Inputs received:");
-    core.debug("API Key: ****");
-    if (testUrl) core.debug(`Test URL: ${testUrl}`);
-    if (environmentId) core.debug(`Environment ID: ${environmentId}`);
+    core.info("Inputs received:");
+    core.info("API Key: ****");
+    if (testUrl) core.info(`Test URL: ${testUrl}`);
+    if (environmentId) core.info(`Environment ID: ${environmentId}`);
 
     const body: Record<string, string | number> = {};
     const repoName = github.context.repo.repo;
     const commitSha = github.context.sha;
     const owner = github.context.repo.owner;
     const pullRequestNumber = github.context.payload.pull_request?.number;
-    core.debug(`Event Name: ${github.context.eventName}`);
-    core.debug(`Payload: ${JSON.stringify(github.context.payload)}`);
+    core.info(`Event Name: ${github.context.eventName}`);
+    core.info(`Payload: ${JSON.stringify(github.context.payload)}`);
     const ref =
       github.context.eventName === "pull_request" ||
       github.context.eventName === "pull_request_target"
@@ -48,7 +48,7 @@ export async function run(): Promise<void> {
     if (pullRequestNumber) body.pullRequestNumber = pullRequestNumber;
     if (ref) body.ref = ref;
 
-    core.debug(`Request Body: ${JSON.stringify(body)}`);
+    core.info(`Request Body: ${JSON.stringify(body)}`);
 
     const response = await fetch(PLAYMATIC_API_ENDPOINT, {
       method: "POST",
