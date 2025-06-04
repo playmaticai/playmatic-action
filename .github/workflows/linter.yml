@@ -29,12 +29,12 @@ jobs:
         id: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version-file: .node-version
-          cache: npm
+          node-version-file: .nvmrc
+          cache: pnpm
 
       - name: Install Dependencies
         id: install
-        run: npm ci
+        run: pnpm i
 
       - name: Lint Codebase
         id: super-linter

@@ -16,7 +16,6 @@ export async function run(): Promise<void> {
     const environmentId: string | undefined =
       core.getInput("environment-id") || undefined;
 
-    // Validate that either test-url or environment-id is present
     if (!testUrl && !environmentId) {
       core.setFailed("Either 'test-url' or 'environment-id' must be provided.");
       return;
