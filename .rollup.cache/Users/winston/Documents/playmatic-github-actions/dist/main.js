@@ -27,7 +27,12 @@ export async function run() {
         const commitSha = github.context.sha;
         const owner = github.context.repo.owner;
         const pullRequestNumber = github.context.payload.pull_request?.number;
-        const ref = github.context.ref;
+        core.debug(`Event Name: ${github.context.eventName}`);
+        core.debug(`Payload: ${JSON.stringify(github.context.payload)}`);
+        const ref = github.context.eventName === "pull_request" ||
+            github.context.eventName === "pull_request_target"
+            ? github.context.payload.pull_request?.head?.ref
+            : github.context.ref;
         if (testUrl)
             body.entrypointUrl = testUrl;
         if (environmentId)

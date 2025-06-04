@@ -82,6 +82,8 @@ jobs:
       - name: Test Local Action
         id: test-action
         uses: ./
+        env:
+          PLAYMATIC_API_URL: "https://charming-sculpin-strong.ngrok-free.app/api/webhook/play-test"
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY }}
           test-url: https://playmatic.ai
