@@ -1,8 +1,9 @@
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 
 const PLAYMATIC_API_ENDPOINT =
   process.env.PLAYMATIC_API_URL ||
-  "https://app.playmatic.ai/api/webhook/playtest";
+  "https://app.playmatic.ai/api/webhook/play-test";
 
 /**
  * The main function for the action.
@@ -26,9 +27,21 @@ export async function run(): Promise<void> {
     if (testUrl) core.debug(`Test URL: ${testUrl}`);
     if (environmentId) core.debug(`Environment ID: ${environmentId}`);
 
-    const body: Record<string, string> = {};
+    const body: Record<string, string | number> = {};
+    const repoName = github.context.repo.repo;
+    const commitSha = github.context.sha;
+    const owner = github.context.repo.owner;
+    const pullRequestNumber = github.context.payload.pull_request?.number;
+    const ref = github.context.ref;
+
     if (testUrl) body.entrypointUrl = testUrl;
     if (environmentId) body.environmentId = environmentId;
+    if (repoName) body.repoName = repoName;
+    if (owner) body.repoOwner = owner;
+    if (commitSha) body.commitSha = commitSha;
+    if (pullRequestNumber) body.pullRequestNumber = pullRequestNumber;
+    if (ref) body.ref = ref;
+
     core.debug(`Request body: ${JSON.stringify(body)}`);
 
     const response = await fetch(PLAYMATIC_API_ENDPOINT, {
@@ -41,9 +54,9 @@ export async function run(): Promise<void> {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorData = (await response.json()) as { error: string };
       core.setFailed(
-        `API request failed with status ${response.status}: ${errorText}`,
+        `API request failed with status ${response.status}: ${errorData.error}`,
       );
       return;
     }

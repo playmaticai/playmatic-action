@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
-// Define a constant for the Playmatic API endpoint
-const PLAYMATIC_API_ENDPOINT = "https://api.playmatic.ai/v1/playtests"; // This can be made configurable if needed
+import * as github from "@actions/github";
+const PLAYMATIC_API_ENDPOINT = process.env.PLAYMATIC_API_URL ||
+    "https://app.playmatic.ai/api/webhook/play-test";
 /**
  * The main function for the action.
  *
@@ -11,22 +12,36 @@ export async function run() {
         const apiKey = core.getInput("api-key", { required: true });
         const testUrl = core.getInput("test-url") || undefined;
         const environmentId = core.getInput("environment-id") || undefined;
-        // Validate that either test-url or environment-id is present
         if (!testUrl && !environmentId) {
             core.setFailed("Either 'test-url' or 'environment-id' must be provided.");
             return;
         }
         core.debug("Inputs received:");
-        core.debug("API Key: ****"); // Mask API key in logs
+        core.debug("API Key: ****");
         if (testUrl)
             core.debug(`Test URL: ${testUrl}`);
         if (environmentId)
             core.debug(`Environment ID: ${environmentId}`);
         const body = {};
+        const repoName = github.context.repo.repo;
+        const commitSha = github.context.sha;
+        const owner = github.context.repo.owner;
+        const pullRequestNumber = github.context.payload.pull_request?.number;
+        const ref = github.context.ref;
         if (testUrl)
             body.entrypointUrl = testUrl;
         if (environmentId)
             body.environmentId = environmentId;
+        if (repoName)
+            body.repoName = repoName;
+        if (owner)
+            body.repoOwner = owner;
+        if (commitSha)
+            body.commitSha = commitSha;
+        if (pullRequestNumber)
+            body.pullRequestNumber = pullRequestNumber;
+        if (ref)
+            body.ref = ref;
         core.debug(`Request body: ${JSON.stringify(body)}`);
         const response = await fetch(PLAYMATIC_API_ENDPOINT, {
             method: "POST",
@@ -37,8 +52,8 @@ export async function run() {
             body: JSON.stringify(body),
         });
         if (!response.ok) {
-            const errorText = await response.text();
-            core.setFailed(`API request failed with status ${response.status}: ${errorText}`);
+            const errorData = (await response.json());
+            core.setFailed(`API request failed with status ${response.status}: ${errorData.error}`);
             return;
         }
         const responseData = (await response.json());
