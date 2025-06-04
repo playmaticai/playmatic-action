@@ -42,7 +42,7 @@ export async function run() {
             body.pullRequestNumber = pullRequestNumber;
         if (ref)
             body.ref = ref;
-        core.debug(`Request body: ${JSON.stringify(body)}`);
+        core.debug(`Request Body: ${JSON.stringify(body)}`);
         const response = await fetch(PLAYMATIC_API_ENDPOINT, {
             method: "POST",
             headers: {
