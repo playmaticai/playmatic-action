@@ -32,7 +32,11 @@ export async function run(): Promise<void> {
     const commitSha = github.context.sha;
     const owner = github.context.repo.owner;
     const pullRequestNumber = github.context.payload.pull_request?.number;
-    const ref = github.context.ref;
+    const ref =
+      github.context.eventName === "pull_request" ||
+      github.context.eventName === "pull_request_target"
+        ? github.context.payload.pull_request?.head?.ref
+        : github.context.ref;
 
     if (testUrl) body.entrypointUrl = testUrl;
     if (environmentId) body.environmentId = environmentId;
