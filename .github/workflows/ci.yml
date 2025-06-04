@@ -83,7 +83,9 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+          test-url: https://playmatic.ai
+          environment-id: ${{ secrets.PLAYMATIC_ENVIRONMENT_ID }}
 
       - name: Print Output
         id: output

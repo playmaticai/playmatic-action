@@ -1,11 +1,8 @@
 import * as core from "@actions/core";
 
-// Define a constant for the Playmatic API endpoint
-const PLAYMATIC_API_ENDPOINT = "https://api.playmatic.ai/v1/playtests"; // This can be made configurable if needed
-
-interface PlaytestResponse {
-  playtestUrl: string;
-}
+const PLAYMATIC_API_ENDPOINT =
+  process.env.PLAYMATIC_API_URL ||
+  "https://app.playmatic.ai/api/webhook/playtest";
 
 /**
  * The main function for the action.
@@ -26,7 +23,7 @@ export async function run(): Promise<void> {
     }
 
     core.debug("Inputs received:");
-    core.debug("API Key: ****"); // Mask API key in logs
+    core.debug("API Key: ****");
     if (testUrl) core.debug(`Test URL: ${testUrl}`);
     if (environmentId) core.debug(`Environment ID: ${environmentId}`);
 
@@ -53,7 +50,9 @@ export async function run(): Promise<void> {
       return;
     }
 
-    const responseData = (await response.json()) as PlaytestResponse;
+    const responseData = (await response.json()) as {
+      playtestUrl: string;
+    };
 
     if (responseData?.playtestUrl) {
       core.setOutput("playtest-link", responseData.playtestUrl);
