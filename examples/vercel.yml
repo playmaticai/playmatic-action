@@ -34,7 +34,7 @@ jobs:
     needs: vercel-preview
     steps:
       - name: Playmatic playtest
-        uses: playmaticai/playtest-action@v0.0.3
+        uses: playmaticai/playtest-action@v0.0.4
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY_STAGING }}
           test-url: ${{ needs.vercel-preview.outputs.url }}

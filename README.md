@@ -33,7 +33,7 @@ Next, add a job that depends on the preview deployment job and runs the playtest
     needs: preview
     steps:
     - name: Playmatic playtest
-      uses: playmaticai/playtest-action@v0.0.3
+      uses: playmaticai/playtest-action@v0.0.4
       with:
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
         test-url: ${{ needs.preview.outputs.url }}
