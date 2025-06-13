@@ -24,7 +24,10 @@ export async function run() {
             core.debug(`Environment ID: ${environmentId}`);
         const body = {};
         const repoName = github.context.repo.repo;
-        const commitSha = github.context.sha;
+        const commitSha = github.context.eventName === "pull_request" ||
+            github.context.eventName === "pull_request_target"
+            ? github.context.payload.pull_request?.head?.sha
+            : github.context.sha;
         const owner = github.context.repo.owner;
         const pullRequestNumber = github.context.payload.pull_request?.number;
         core.debug(`Event Name: ${github.context.eventName}`);

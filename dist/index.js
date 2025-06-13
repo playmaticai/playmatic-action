@@ -31254,7 +31254,10 @@ async function run() {
             coreExports.debug(`Environment ID: ${environmentId}`);
         const body = {};
         const repoName = githubExports.context.repo.repo;
-        const commitSha = githubExports.context.sha;
+        const commitSha = githubExports.context.eventName === "pull_request" ||
+            githubExports.context.eventName === "pull_request_target"
+            ? githubExports.context.payload.pull_request?.head?.sha
+            : githubExports.context.sha;
         const owner = githubExports.context.repo.owner;
         const pullRequestNumber = githubExports.context.payload.pull_request?.number;
         coreExports.debug(`Event Name: ${githubExports.context.eventName}`);
