@@ -1,17 +1,67 @@
-# Create a GitHub Action Using TypeScript
+# Playmatic GitHub Action
 
-[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-[![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
-[![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
-[![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
+[![CI](https://github.com/playmaticai/playtest-action/actions/workflows/ci.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/ci.yml)
+[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/check-dist.yml)
+[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/linter.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/linter.yml)
+[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/codeql-analysis.yml)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+## Usage
 
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
+To use this action, add the following step to your GitHub Actions workflow file (e.g., `.github/workflows/main.yml`). This action is typically run after a preview deployment has been created.
 
-## Initial Setup
+### 1. Get Preview URL
+
+First, you need a step in your job that generates a preview URL. For Vercel, you can use an action like `patrickedqvist/wait-for-vercel-preview` to wait for the deployment to be ready and get the URL.
+
+```yaml
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Waiting for 200 from the Vercel Preview
+    outputs:
+      url: https://example.com
+```
+
+### 2. Run Playmatic Playtest
+
+Next, add a job that depends on the preview deployment job and runs the playtest.
+
+```yaml
+  start-playmatic:
+    runs-on: ubuntu-latest
+    needs: preview
+    steps:
+    - name: Playmatic playtest
+      uses: playmaticai/playtest-action@v0.0.3
+      with:
+        api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+        test-url: ${{ needs.preview.outputs.url }}
+```
+
+### 3. Configure API Key
+
+You will need to add your Playmatic API key as a secret to your GitHub repository.
+
+You can do so from [the app](https://app.playmatic.ai/) under settings.
+
+## Inputs
+
+| Name       | Required | Description                                                                                                                              |
+| ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `api-key`  | `true`   | Your Playmatic API key.                                                                                                                  |
+| `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playtest should start (e.g. a login page).            |
+
+## Example
+
+* Vercel: [`examples/vercel.yml`](./examples/vercel.yml).
+* More coming soon! Please reach out to us if you are unsure on how to configure testing for any environment.
+
+## Contributing
+
+This section contains information for developing and contributing to this action.
+
+### Initial Setup
 
 After you've cloned the repository to your local machine or codespace, you'll
 need to perform some initial setup steps before you can develop your action.
@@ -28,13 +78,13 @@ need to perform some initial setup steps before you can develop your action.
    pnpm run bundle
    ```
 
-## Developing
+### Developing
 
 The [`src/`](./src/) directory is the heart of your action!
 
 There are a few things to keep in mind when writing your action code:
 
-- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
+* Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
   In `main.ts`, you will see that the action is run in an `async` function.
 
   ```javascript
@@ -84,12 +134,12 @@ So, what are you waiting for? Go ahead and start customizing your action!
 
    The `local-action` utility can be run in the following ways:
 
-   - Visual Studio Code Debugger
+   * Visual Studio Code Debugger
 
      Make sure to review and, if needed, update
      [`.vscode/launch.json`](./.vscode/launch.json)
 
-   - Terminal/Command Prompt
+   * Terminal/Command Prompt
 
      ```bash
      # npx @github/local action <action-yaml-path> <entrypoint> <dotenv-file>
@@ -124,35 +174,7 @@ For information about versioning your action, see
 [Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
 in the GitHub Actions toolkit.
 
-## Usage
-
-After testing, you can create version tag(s) that developers can use to
-reference different stable versions of your action. For more information, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
-
-```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-
-  - name: Test Local Action
-    id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
-    with:
-      milliseconds: 1000
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
-```
-
-## Publishing a New Release
+### Publishing a New Release
 
 This project includes a helper script, [`script/release`](./script/release)
 designed to streamline the process of tagging and pushing new releases for
