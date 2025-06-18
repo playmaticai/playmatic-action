@@ -1,5 +1,5 @@
-name: Playmatic Autonomous Playtest
-description: Run autonomous playtests on your code with Playmatic.
+name: Playmatic Autonomous Test
+description: Run autonomous tests on your code with Playmatic.
 author: Playmatic
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
@@ -10,19 +10,16 @@ branding:
 # Define your inputs here.
 inputs:
   api-key:
-    description: Your Playmatic API key.
+    description: Your Playmatic API key from the Settings page of the Playmatic dashboard.
     required: true
   test-url:
-    description: The URL of the application to test. Required if environment-id is not provided.
-    required: false
-  environment-id:
-    description: The ID of the Playmatic environment to use for the test. We'll create an environment for the repository by default if not provided
-    required: false
+    description: The URL of the application to test.
+    required: true
 
 # Define your outputs here.
 outputs:
   playtest-link:
-    description: The URL to view the playtest run.
+    description: The URL to view the full test run results.
 
 runs:
   using: node20
