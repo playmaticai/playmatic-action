@@ -1,16 +1,16 @@
 {
-  "name": "playmate-action",
-  "description": "Playmate GitHub Action to run app play test",
-  "version": "v0.0.5",
+  "name": "playmatic-action",
+  "description": "Playmatic GitHub Action to run app play test",
+  "version": "v0.0.6",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/playmaticai/playmatic-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/playmaticai/playmatic-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/playmaticai/playmatic-action/issues"
   },
   "keywords": ["actions"],
   "exports": {

@@ -44,7 +44,7 @@ jobs:
     needs: preview
     steps:
     - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.5
+      uses: playmaticai/playmatic-action@v0.0.6
       with:
         # This can be retrieved from the "Settings" page on the Playmatic dashboard.
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
@@ -55,7 +55,7 @@ jobs:
 
 ### On pushes to a branch
 
-This workflow runs a Playmatic test on a staging or development environment after code is pushed to a specific branch.
+This workflow runs a Playmatic test after code is pushed to a specific branch.
 
 ```yaml
 # .github/workflows/playmatic-push.yml
@@ -73,11 +73,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.5
+      uses: playmaticai/playmatic-action@v0.0.6
       with:
         # This can be retrieved from the "Settings" page on the Playmatic dashboard.
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
         # The URL of the deployment. This should always be a test environment (e.g. staging)
+        # Note that you might have to introduce some delay if your code need to be built and deployed after being merged to the branch
         test-url: "https://link-to-your-staging-environment.com"
 ```
 
@@ -91,7 +92,7 @@ You will need to add your Playmatic API key as a secret to your GitHub repositor
 
 | Name       | Required | Description                                                                                                                              |
 | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `api-key`  | `true`   | Your Playmatic API key.                                                                                                                  |
+| `api-key`  | `true`   | Your Playmatic API. Grab this from the settings page. key.                                                                                                                  |
 | `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playmatic tests should start (e.g. a login page).            |
 
 ## Example
@@ -218,4 +219,4 @@ in the GitHub Actions toolkit.
 
 ### Publishing a New Release
 
-This project includes a helper script, [`
+This project includes a helper script, for releasing, simply commit the new version and run `bash scripts/release`.

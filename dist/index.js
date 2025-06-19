@@ -31295,9 +31295,9 @@ async function run() {
             return;
         }
         const responseData = (await response.json());
-        if (responseData?.playtestUrl) {
-            coreExports.setOutput("playtest-link", responseData.playtestUrl);
-            coreExports.info(`Playtest successfully initiated: ${responseData.playtestUrl}`);
+        if (responseData?.testUrl) {
+            coreExports.setOutput("testUrl", responseData.testUrl);
+            coreExports.info(`Playtest successfully initiated: ${responseData.testUrl}`);
         }
         else {
             coreExports.setFailed("Failed to get playtest URL from API response or response did not match expected format.");
