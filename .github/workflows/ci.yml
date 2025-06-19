@@ -83,7 +83,7 @@ jobs:
         id: test-action
         uses: ./
         env:
-          PLAYMATIC_API_URL: "https://app.playmatic.ai/api/webhook/play-test"
+          PLAYMATIC_API_URL: "https://app.playmatic.ai/api/v1/trigger-test"
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY }}
           test-url: https://playmatic.ai
