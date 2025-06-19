@@ -29,12 +29,12 @@ jobs:
     outputs:
       url: ${{ steps.vercel-preview.outputs.url }}
 
-  start-playtest:
+  start-playmatic:
     runs-on: ubuntu-latest
     needs: vercel-preview
     steps:
-      - name: Playmatic playtest
-        uses: playmaticai/playtest-action@v0.0.4
+      - name: Playmatic tests
+        uses: playmaticai/playmatic-action@v0.0.6
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY_STAGING }}
           test-url: ${{ needs.vercel-preview.outputs.url }}

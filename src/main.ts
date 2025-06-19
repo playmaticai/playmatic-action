@@ -3,7 +3,7 @@ import * as github from "@actions/github";
 
 const PLAYMATIC_API_ENDPOINT =
   process.env.PLAYMATIC_API_URL ||
-  "https://app.playmatic.ai/api/webhook/play-test";
+  "https://app.playmatic.ai/api/v1/trigger-test";
 
 /**
  * The main function for the action.
@@ -72,12 +72,12 @@ export async function run(): Promise<void> {
     }
 
     const responseData = (await response.json()) as {
-      playtestUrl: string;
+      outputUrl: string;
     };
 
-    if (responseData?.playtestUrl) {
-      core.setOutput("playtest-link", responseData.playtestUrl);
-      core.info(`Playtest successfully initiated: ${responseData.playtestUrl}`);
+    if (responseData?.outputUrl) {
+      core.setOutput("outputUrl", responseData.outputUrl);
+      core.info(`Playtest successfully initiated: ${responseData.outputUrl}`);
     } else {
       core.setFailed(
         "Failed to get playtest URL from API response or response did not match expected format.",

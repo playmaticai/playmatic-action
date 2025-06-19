@@ -1,16 +1,16 @@
 {
-  "name": "playmate-action",
-  "description": "Playmate GitHub Action to run app play test",
-  "version": "v0.0.5",
+  "name": "playmatic-action",
+  "description": "Playmatic GitHub Action to run app play test",
+  "version": "v0.0.6",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/playmaticai/playmatic-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/playmaticai/playmatic-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/playmaticai/playmatic-action/issues"
   },
   "keywords": ["actions"],
   "exports": {
@@ -21,8 +21,8 @@
   },
   "scripts": {
     "bundle": "pnpm run format && pnpm run package",
-    "format": "pnpx @biomejs/biome format . --write",
-    "lint": "pnpx @biomejs/biome lint . --write",
+    "format": "pnpx @biomejs/biome@1.9.4 format . --write",
+    "lint": "pnpx @biomejs/biome@1.9.4 lint . --write",
     "package": "npx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "package:watch": "pnpm run package -- --watch",
     "all": "pnpm run format && pnpm run lint && pnpm run test && pnpm run coverage && npm run package"

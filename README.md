@@ -1,56 +1,98 @@
 # Playmatic GitHub Action
 
-[![CI](https://github.com/playmaticai/playtest-action/actions/workflows/ci.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/ci.yml)
-[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/check-dist.yml)
-[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/linter.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/linter.yml)
-[![Check dist](https://github.com/playmaticai/playtest-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playtest-action/actions/workflows/codeql-analysis.yml)
+[![CI](https://github.com/playmaticai/playmatic-action/actions/workflows/ci.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/ci.yml)
+[![Check dist](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml)
+[![code analysis](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml)
 
 ## Usage
 
-To use this action, add the following step to your GitHub Actions workflow file (e.g., `.github/workflows/main.yml`). This action is typically run after a preview deployment has been created.
+To use this action, add one of the following example workflows to your repository in a file like `.github/workflows/playmatic.yml`.
 
-### 1. Get Preview URL
+### On new Pull Requests
 
-First, you need a step in your job that generates a preview URL. For Vercel, you can use an action like `patrickedqvist/wait-for-vercel-preview` to wait for the deployment to be ready and get the URL.
+This workflow runs a Playmatic test on preview deployments for new pull requests. This is useful for catching issues before they are merged into your main branch. This example is for Vercel, but can be adapted for other hosting providers that generate preview URLs.
 
 ```yaml
+# .github/workflows/playmatic-pr.yml
+name: Playmatic Test Run
+on:
+  # On new PRs opened with these branches as the destination, the test will run.
+  pull_request:
+    branches: ["main"]
+  merge_group:
+
 jobs:
+  # This job waits for the preview deployment to be ready and outputs its URL.
+  # This is an example job for Vercel specifically. Use a different job if you are not using Vercel.
   preview:
     runs-on: ubuntu-latest
     steps:
     - name: Waiting for 200 from the Vercel Preview
+      id: preview
+      uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+      with:
+        # This is automatically populated by GitHub, you do not need to add this secret
+        token: ${{ secrets.GITHUB_TOKEN }}
+        max_timeout: 600
     outputs:
-      url: https://example.com
-```
-
-### 2. Run Playmatic Playtest
-
-Next, add a job that depends on the preview deployment job and runs the playtest.
-
-```yaml
+      url: ${{ steps.preview.outputs.url }}
+    
+  # This job runs the Playmatic test on a branch's preview deployment.
   start-playmatic:
     runs-on: ubuntu-latest
     needs: preview
     steps:
-    - name: Playmatic playtest
-      uses: playmaticai/playtest-action@v0.0.4
+    - name: Playmatic tests
+      uses: playmaticai/playmatic-action@v0.0.6
       with:
+        # This can be retrieved from the "Settings" page on the Playmatic dashboard.
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+        # Use the output from the 'preview' job.
+        # If not using a preview job, you can provide the preview URL directly.
         test-url: ${{ needs.preview.outputs.url }}
 ```
 
-### 3. Configure API Key
+### On pushes to a branch
 
-You will need to add your Playmatic API key as a secret to your GitHub repository.
+This workflow runs a Playmatic test after code is pushed to a specific branch.
 
-You can do so from [the app](https://app.playmatic.ai/) under settings.
+```yaml
+# .github/workflows/playmatic-push.yml
+name: Playmatic Test Run
+on:
+  push:
+    # On new commits to these branches, the test will run.
+    branches:
+      - main
 
-## Inputs
+jobs:    
+  # This job runs the Playmatic test on URL provided in the "test-url" field.
+  # The latest commit will be used to determine what to test.
+  start-playmatic:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Playmatic tests
+      uses: playmaticai/playmatic-action@v0.0.6
+      with:
+        # This can be retrieved from the "Settings" page on the Playmatic dashboard.
+        api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+        # The URL of the deployment. This should always be a test environment (e.g. staging)
+        # Note that you might have to introduce some delay if your code need to be built and deployed after being merged to the branch
+        test-url: "https://link-to-your-staging-environment.com"
+```
+
+## Configuration
+
+### API Key
+
+You will need to add your Playmatic API key as a secret to your GitHub repository. You can get a key from [the app](https://app.playmatic.ai/) under settings.
+
+### Inputs
 
 | Name       | Required | Description                                                                                                                              |
 | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `api-key`  | `true`   | Your Playmatic API key.                                                                                                                  |
-| `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playtest should start (e.g. a login page).            |
+| `api-key`  | `true`   | Your Playmatic API. Grab this from the settings page. key.                                                                                                                  |
+| `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playmatic tests should start (e.g. a login page).            |
 
 ## Example
 
@@ -176,27 +218,4 @@ in the GitHub Actions toolkit.
 
 ### Publishing a New Release
 
-This project includes a helper script, [`script/release`](./script/release)
-designed to streamline the process of tagging and pushing new releases for
-GitHub Actions.
-
-GitHub Actions allows users to select a specific version of the action to use,
-based on release tags. This script simplifies this process by performing the
-following steps:
-
-1. **Retrieving the latest release tag:** The script starts by fetching the most
-   recent SemVer release tag of the current branch, by looking at the local data
-   available in your repository.
-1. **Prompting for a new release tag:** The user is then prompted to enter a new
-   release tag. To assist with this, the script displays the tag retrieved in
-   the previous step, and validates the format of the inputted tag (vX.X.X). The
-   user is also reminded to update the version field in package.json.
-1. **Tagging the new release:** The script then tags a new release and syncs the
-   separate major tag (e.g. v1, v2) with the new release tag (e.g. v1.0.0,
-   v2.1.2). When the user is creating a new major release, the script
-   auto-detects this and creates a `releases/v#` branch for the previous major
-   version.
-1. **Pushing changes to remote:** Finally, the script pushes the necessary
-   commits, tags and branches to the remote repository. From here, you will need
-   to create a new release in GitHub so users can easily reference the new tags
-   in their workflows.
+This project includes a helper script, for releasing, simply commit the new version and run `bash scripts/release`.
