@@ -2,8 +2,7 @@
 
 [![CI](https://github.com/playmaticai/playmatic-action/actions/workflows/ci.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/ci.yml)
 [![Check dist](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml)
-[![Check dist](https://github.com/playmaticai/playmatic-action/actions/workflows/linter.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/linter.yml)
-[![Check dist](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml)
+[![code analysis](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml)
 
 ## Usage
 
