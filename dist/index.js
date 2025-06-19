@@ -31231,7 +31231,7 @@ function requireGithub () {
 var githubExports = requireGithub();
 
 const PLAYMATIC_API_ENDPOINT = process.env.PLAYMATIC_API_URL ||
-    "https://app.playmatic.ai/api/webhook/play-test";
+    "https://app.playmatic.ai/api/v1/trigger-test";
 /**
  * The main function for the action.
  *
@@ -31295,9 +31295,9 @@ async function run() {
             return;
         }
         const responseData = (await response.json());
-        if (responseData?.testUrl) {
-            coreExports.setOutput("testUrl", responseData.testUrl);
-            coreExports.info(`Playtest successfully initiated: ${responseData.testUrl}`);
+        if (responseData?.outputUrl) {
+            coreExports.setOutput("outputUrl", responseData.outputUrl);
+            coreExports.info(`Playtest successfully initiated: ${responseData.outputUrl}`);
         }
         else {
             coreExports.setFailed("Failed to get playtest URL from API response or response did not match expected format.");
