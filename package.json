@@ -1,7 +1,7 @@
 {
   "name": "playmatic-action",
   "description": "Playmatic GitHub Action to run app play test",
-  "version": "v0.0.6",
+  "version": "v0.0.7",
   "type": "module",
   "private": true,
   "homepage": "https://github.com/playmaticai/playmatic-action",

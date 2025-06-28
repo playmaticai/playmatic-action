@@ -43,7 +43,7 @@ jobs:
     needs: preview
     steps:
     - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.6
+      uses: playmaticai/playmatic-action@v0.0.7
       with:
         # This can be retrieved from the "Settings" page on the Playmatic dashboard.
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.6
+      uses: playmaticai/playmatic-action@v0.0.7
       with:
         # This can be retrieved from the "Settings" page on the Playmatic dashboard.
         api-key: ${{ secrets.PLAYMATIC_API_KEY }}
@@ -93,6 +93,7 @@ You will need to add your Playmatic API key as a secret to your GitHub repositor
 | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `api-key`  | `true`   | Your Playmatic API. Grab this from the settings page. key.                                                                                                                  |
 | `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playmatic tests should start (e.g. a login page).            |
+| `run-all-saved-tests` | `false` | Whether to run all saved tests. Defaults to `true`. |
 
 ## Example
 

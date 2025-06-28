@@ -31242,6 +31242,7 @@ async function run() {
         const apiKey = coreExports.getInput("api-key", { required: true });
         const testUrl = coreExports.getInput("test-url") || undefined;
         const environmentId = coreExports.getInput("environment-id") || undefined;
+        const runAllSavedTests = coreExports.getBooleanInput("run-all-saved-tests");
         if (!testUrl && !environmentId) {
             coreExports.setFailed("Either 'test-url' or 'environment-id' must be provided.");
             return;
@@ -31252,6 +31253,7 @@ async function run() {
             coreExports.debug(`Test URL: ${testUrl}`);
         if (environmentId)
             coreExports.debug(`Environment ID: ${environmentId}`);
+        coreExports.debug(`Run All Saved Tests: ${runAllSavedTests}`);
         const body = {};
         const repoName = githubExports.context.repo.repo;
         const commitSha = githubExports.context.eventName === "pull_request" ||
@@ -31280,6 +31282,7 @@ async function run() {
             body.pullRequestNumber = pullRequestNumber;
         if (ref)
             body.ref = ref;
+        body.runAllSavedTests = runAllSavedTests;
         coreExports.debug(`Request Body: ${JSON.stringify(body)}`);
         const response = await fetch(PLAYMATIC_API_ENDPOINT, {
             method: "POST",
