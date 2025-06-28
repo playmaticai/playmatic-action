@@ -15,6 +15,10 @@ inputs:
   test-url:
     description: The URL of the application to test.
     required: true
+  run-all-saved-tests:
+    description: Whether to run all saved tests.
+    required: false
+    default: 'true'
 
 # Define your outputs here.
 outputs:

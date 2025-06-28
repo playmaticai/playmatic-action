@@ -16,6 +16,7 @@ export async function run(): Promise<void> {
     const testUrl: string | undefined = core.getInput("test-url") || undefined;
     const environmentId: string | undefined =
       core.getInput("environment-id") || undefined;
+    const runAllSavedTests = core.getBooleanInput("run-all-saved-tests");
 
     if (!testUrl && !environmentId) {
       core.setFailed("Either 'test-url' or 'environment-id' must be provided.");
@@ -26,8 +27,9 @@ export async function run(): Promise<void> {
     core.debug("API Key: ****");
     if (testUrl) core.debug(`Test URL: ${testUrl}`);
     if (environmentId) core.debug(`Environment ID: ${environmentId}`);
+    core.debug(`Run All Saved Tests: ${runAllSavedTests}`);
 
-    const body: Record<string, string | number> = {};
+    const body: Record<string, string | number | boolean> = {};
     const repoName = github.context.repo.repo;
     const commitSha =
       github.context.eventName === "pull_request" ||
@@ -51,6 +53,7 @@ export async function run(): Promise<void> {
     if (commitSha) body.commitSha = commitSha;
     if (pullRequestNumber) body.pullRequestNumber = pullRequestNumber;
     if (ref) body.ref = ref;
+    body.runAllSavedTests = runAllSavedTests;
 
     core.debug(`Request Body: ${JSON.stringify(body)}`);
 
