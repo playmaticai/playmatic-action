@@ -31243,6 +31243,7 @@ async function run() {
         const testUrl = coreExports.getInput("test-url") || undefined;
         const environmentId = coreExports.getInput("environment-id") || undefined;
         const runAllSavedTests = coreExports.getBooleanInput("run-all-saved-tests");
+        const runExploratoryTest = coreExports.getBooleanInput("run-exploratory-test");
         if (!testUrl && !environmentId) {
             coreExports.setFailed("Either 'test-url' or 'environment-id' must be provided.");
             return;
@@ -31283,6 +31284,7 @@ async function run() {
         if (ref)
             body.ref = ref;
         body.runAllSavedTests = runAllSavedTests;
+        body.runExploratoryTest = runExploratoryTest;
         coreExports.debug(`Request Body: ${JSON.stringify(body)}`);
         const response = await fetch(PLAYMATIC_API_ENDPOINT, {
             method: "POST",

@@ -17,6 +17,7 @@ export async function run(): Promise<void> {
     const environmentId: string | undefined =
       core.getInput("environment-id") || undefined;
     const runAllSavedTests = core.getBooleanInput("run-all-saved-tests");
+    const runExploratoryTest = core.getBooleanInput("run-exploratory-test");
 
     if (!testUrl && !environmentId) {
       core.setFailed("Either 'test-url' or 'environment-id' must be provided.");
@@ -54,6 +55,7 @@ export async function run(): Promise<void> {
     if (pullRequestNumber) body.pullRequestNumber = pullRequestNumber;
     if (ref) body.ref = ref;
     body.runAllSavedTests = runAllSavedTests;
+    body.runExploratoryTest = runExploratoryTest;
 
     core.debug(`Request Body: ${JSON.stringify(body)}`);
 

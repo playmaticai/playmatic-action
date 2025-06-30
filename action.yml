@@ -19,6 +19,11 @@ inputs:
     description: Whether to run all saved tests.
     required: false
     default: 'true'
+  run-exploratory-test:
+    description: Whether to run an exploratory test based on changes made in the PR/commit.
+    required: false
+    default: 'true'
+    
 
 # Define your outputs here.
 outputs:
