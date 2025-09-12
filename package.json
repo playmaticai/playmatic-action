@@ -1,7 +1,7 @@
 {
   "name": "playmatic-action",
-  "description": "Playmatic GitHub Action to run app play test",
-  "version": "v0.0.8",
+  "description": "GitHub Action to run Playmatic E2E tests using the CLI",
+  "version": "1.0.0",
   "type": "module",
   "private": true,
   "homepage": "https://github.com/playmaticai/playmatic-action",
@@ -30,7 +30,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.1"
+    "@actions/exec": "^1.1.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
