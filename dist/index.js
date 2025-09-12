@@ -27266,9 +27266,14 @@ async function run() {
         if (baseUrlOverride) {
             coreExports.debug(`Base URL override: ${baseUrlOverride}`);
         }
-        // 1. Install Playmatic CLI globally
-        coreExports.info(`Installing Playmatic CLI v${cliVersion}...`);
-        await execExports.exec("npm", ["install", "-g", `playmatic@${cliVersion}`]);
+        // 1. Install Playmatic CLI and SDK globally
+        coreExports.info(`Installing Playmatic CLI v${cliVersion} and SDK...`);
+        await execExports.exec("npm", [
+            "install",
+            "-g",
+            `playmatic@${cliVersion}`,
+            "@playmatic/sdk",
+        ]);
         // 2. Set API key environment variable
         coreExports.exportVariable("PLAYMATIC_API_KEY", apiKey);
         // 3. Build CLI command

@@ -21,9 +21,14 @@ export async function run(): Promise<void> {
       core.debug(`Base URL override: ${baseUrlOverride}`);
     }
 
-    // 1. Install Playmatic CLI globally
-    core.info(`Installing Playmatic CLI v${cliVersion}...`);
-    await exec.exec("npm", ["install", "-g", `playmatic@${cliVersion}`]);
+    // 1. Install Playmatic CLI and SDK globally
+    core.info(`Installing Playmatic CLI v${cliVersion} and SDK...`);
+    await exec.exec("npm", [
+      "install",
+      "-g",
+      `playmatic@${cliVersion}`,
+      "@playmatic/sdk",
+    ]);
 
     // 2. Set API key environment variable
     core.exportVariable("PLAYMATIC_API_KEY", apiKey);
