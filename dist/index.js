@@ -27266,22 +27266,19 @@ async function run() {
         if (baseUrlOverride) {
             coreExports.debug(`Base URL override: ${baseUrlOverride}`);
         }
-        // 1. Set API key environment variable
+        // 1. Install Playmatic CLI globally
+        coreExports.info(`Installing Playmatic CLI v${cliVersion}...`);
+        await execExports.exec("npm", ["install", "-g", `playmatic@${cliVersion}`]);
+        // 2. Set API key environment variable
         coreExports.exportVariable("PLAYMATIC_API_KEY", apiKey);
-        // 2. Build CLI command using npx (uses local node_modules)
-        const args = [
-            `playmatic@${cliVersion}`,
-            "run",
-            testPaths,
-            "--env",
-            environment,
-        ];
+        // 3. Build CLI command
+        const args = ["run", testPaths, "--env", environment];
         if (baseUrlOverride) {
             args.push("--base-url", baseUrlOverride);
         }
-        // 3. Execute Playmatic CLI via npx
-        coreExports.info(`Running: npx ${args.join(" ")}`);
-        await execExports.exec("npx", args);
+        // 4. Execute Playmatic CLI
+        coreExports.info(`Running: playmatic ${args.join(" ")}`);
+        await execExports.exec("playmatic", args);
         coreExports.info("✅ Playmatic tests completed successfully");
         coreExports.setOutput("success", "true");
     }
