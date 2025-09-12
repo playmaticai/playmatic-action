@@ -21,7 +21,7 @@ inputs:
     default: 'playmatic-tests'
   cli-version:
     description: 'Playmatic CLI version'
-    default: '0.1.4'
+    default: '0.1.5'
 
 outputs:
   success:
