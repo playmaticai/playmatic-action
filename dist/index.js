@@ -27266,9 +27266,9 @@ async function run() {
         if (baseUrlOverride) {
             coreExports.debug(`Base URL override: ${baseUrlOverride}`);
         }
-        // 1. Install Playmatic CLI
+        // 1. Install Playmatic CLI with TypeScript support
         coreExports.info(`Installing Playmatic CLI v${cliVersion}...`);
-        await execExports.exec("npm", ["install", "-g", `playmatic@${cliVersion}`]);
+        await execExports.exec("npm", ["install", "-g", `playmatic@${cliVersion}`, "tsx"]);
         // 2. Set API key environment variable
         coreExports.exportVariable("PLAYMATIC_API_KEY", apiKey);
         // 3. Build CLI command
