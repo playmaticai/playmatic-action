@@ -21,22 +21,24 @@ export async function run(): Promise<void> {
       core.debug(`Base URL override: ${baseUrlOverride}`);
     }
 
-    // 1. Install Playmatic CLI globally
-    core.info(`Installing Playmatic CLI v${cliVersion}...`);
-    await exec.exec("npm", ["install", "-g", `playmatic@${cliVersion}`]);
-
-    // 2. Set API key environment variable
+    // 1. Set API key environment variable
     core.exportVariable("PLAYMATIC_API_KEY", apiKey);
 
-    // 3. Build CLI command
-    const args = ["run", testPaths, "--env", environment];
+    // 2. Build CLI command using npx (no global installation needed)
+    const args = [
+      `playmatic@${cliVersion}`,
+      "run",
+      testPaths,
+      "--env",
+      environment,
+    ];
     if (baseUrlOverride) {
       args.push("--base-url", baseUrlOverride);
     }
 
-    // 4. Execute Playmatic CLI
-    core.info(`Running: playmatic ${args.join(" ")}`);
-    await exec.exec("playmatic", args);
+    // 3. Execute Playmatic CLI via npx
+    core.info(`Running: npx ${args.join(" ")}`);
+    await exec.exec("npx", args);
 
     core.info("✅ Playmatic tests completed successfully");
     core.setOutput("success", "true");
