@@ -79,14 +79,20 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: pnpm install
+
       - name: Test Action
         id: test-action
         uses: ./
-        env:
-          PLAYMATIC_API_URL: "https://app.playmatic.ai/api/v1/trigger-test"
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY }}
-          test-url: https://playmatic.ai
+          environment: 'staging'
 
       - name: Print Output
         id: output
