@@ -1,34 +1,31 @@
-name: Playmatic Autonomous Test
-description: Run autonomous tests on your code with Playmatic.
+name: Playmatic E2E Tests
+description: Run Playmatic E2E tests locally using the CLI
 author: Playmatic
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
   icon: play
-  color: yellow
+  color: blue
 
-# Define your inputs here.
 inputs:
   api-key:
-    description: Your Playmatic API key from the Settings page of the Playmatic dashboard.
+    description: 'Playmatic API key'
     required: true
-  test-url:
-    description: The URL of the application to test.
-    required: true
-  run-all-saved-tests:
-    description: Whether to run all saved tests.
+  environment:
+    description: 'Environment from playmatic.config.ts'
+    default: 'staging'
+  base-url-override:
+    description: 'Override baseUrl for this run'
     required: false
-    default: 'true'
-  run-exploratory-test:
-    description: Whether to run an exploratory test based on changes made in the PR/commit.
-    required: false
-    default: 'true'
-    
+  test-paths:
+    description: 'Test files/directories to run'
+    default: 'playmatic-tests'
+  cli-version:
+    description: 'Playmatic CLI version'
+    default: '0.1.5'
 
-# Define your outputs here.
 outputs:
-  testUrl:
-    description: The URL to view the full test run results.
+  success:
+    description: 'Whether tests passed'
 
 runs:
   using: node20
