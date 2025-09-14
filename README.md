@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run Playmatic tests
-        uses: playmatic/playmatic-action@v1
+        uses: playmaticai/playmatic-action@v1
         with:
           api-key: ${{ secrets.PLAYMATIC_API_KEY }}
           environment: 'staging'  # Change to match your playmatic.config.ts
