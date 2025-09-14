@@ -50,6 +50,3 @@ export async function run(): Promise<void> {
     core.setFailed(errorMessage);
   }
 }
-
-// Run the action
-run();

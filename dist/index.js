@@ -27292,8 +27292,6 @@ async function run() {
         coreExports.setFailed(errorMessage);
     }
 }
-// Run the action
-run();
 
 run();
 //# sourceMappingURL=index.js.map
