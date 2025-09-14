@@ -4,102 +4,132 @@
 [![Check dist](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/check-dist.yml)
 [![code analysis](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/playmaticai/playmatic-action/actions/workflows/codeql-analysis.yml)
 
+A GitHub Action to run Playmatic E2E tests using the CLI. Tests are executed locally in the GitHub Actions runner with results displayed directly in your workflow logs.
+
+## Features
+
+- **Local execution**: Tests run in GitHub Actions runner (no remote dependencies)
+- **Environment support**: Use any environment from your `playmatic.config.ts`
+- **URL overrides**: Dynamic base URL support for preview deployments
+- **Video recordings**: Recording URLs displayed in workflow output
+- **Full CLI output**: Complete test results visible in GitHub logs
+
+## Prerequisites
+
+- **playmatic.config.ts**: Your repository must have a Playmatic configuration file
+- **@playmatic/sdk**: Install as dev dependency in your project
+- **API key**: Playmatic API key stored in GitHub Secrets
+
 ## Usage
-
-To use this action, add one of the following example workflows to your repository in a file like `.github/workflows/playmatic.yml`.
-
-### On new Pull Requests
-
-This workflow runs a Playmatic test on preview deployments for new pull requests. This is useful for catching issues before they are merged into your main branch. This example is for Vercel, but can be adapted for other hosting providers that generate preview URLs.
-
-```yaml
-# .github/workflows/playmatic-pr.yml
-name: Playmatic Test Run
-on:
-  # On new PRs opened with these branches as the destination, the test will run.
-  pull_request:
-    branches: ["main"]
-  merge_group:
-
-jobs:
-  # This job waits for the preview deployment to be ready and outputs its URL.
-  # This is an example job for Vercel specifically. Use a different job if you are not using Vercel.
-  preview:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Waiting for 200 from the Vercel Preview
-      id: preview
-      uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-      with:
-        # This is automatically populated by GitHub, you do not need to add this secret
-        token: ${{ secrets.GITHUB_TOKEN }}
-        max_timeout: 600
-    outputs:
-      url: ${{ steps.preview.outputs.url }}
-    
-  # This job runs the Playmatic test on a branch's preview deployment.
-  start-playmatic:
-    runs-on: ubuntu-latest
-    needs: preview
-    steps:
-    - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.8
-      with:
-        # This can be retrieved from the "Settings" page on the Playmatic dashboard.
-        api-key: ${{ secrets.PLAYMATIC_API_KEY }}
-        # Use the output from the 'preview' job.
-        # If not using a preview job, you can provide the preview URL directly.
-        test-url: ${{ needs.preview.outputs.url }}
-```
 
 ### On pushes to a branch
 
-This workflow runs a Playmatic test after code is pushed to a specific branch.
+This workflow runs Playmatic tests after code is pushed to specific branches.
 
 ```yaml
-# .github/workflows/playmatic-push.yml
-name: Playmatic Test Run
+# .github/workflows/playmatic.yml
+name: Playmatic E2E Tests
 on:
   push:
-    # On new commits to these branches, the test will run.
-    branches:
-      - main
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
 
-jobs:    
-  # This job runs the Playmatic test on URL provided in the "test-url" field.
-  # The latest commit will be used to determine what to test.
-  start-playmatic:
+jobs:
+  e2e-tests:
     runs-on: ubuntu-latest
     steps:
-    - name: Playmatic tests
-      uses: playmaticai/playmatic-action@v0.0.8
-      with:
-        # This can be retrieved from the "Settings" page on the Playmatic dashboard.
-        api-key: ${{ secrets.PLAYMATIC_API_KEY }}
-        # The URL of the deployment. This should always be a test environment (e.g. staging)
-        # Note that you might have to introduce some delay if your code need to be built and deployed after being merged to the branch
-        test-url: "https://link-to-your-staging-environment.com"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Playmatic tests
+        uses: playmatic/playmatic-action@v1
+        with:
+          api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+          environment: 'staging'  # Change to match your playmatic.config.ts
+          test-paths: 'playmatic-tests'  # Change if tests are in different directory
+          # base-url-override: ${{ github.event.deployment.url }}  # Uncomment for preview deployments
 ```
 
-## Configuration
+## Inputs
 
-### API Key
+| Input | Description | Required | Default |
+|-------|-------------|----------|---------|
+| `api-key` | Your Playmatic API key | Yes | - |
+| `environment` | Environment from playmatic.config.ts | No | `staging` |
+| `base-url-override` | Override baseUrl for this run | No | - |
+| `test-paths` | Test files/directories to run | No | `playmatic-tests` |
+| `cli-version` | Playmatic CLI version to use | No | `0.1.5` |
 
-You will need to add your Playmatic API key as a secret to your GitHub repository. You can get a key from [the app](https://app.playmatic.ai/) under settings.
+## Outputs
 
-### Inputs
+| Output | Description |
+|--------|-------------|
+| `success` | Whether tests passed (true/false) |
 
-| Name       | Required | Description                                                                                                                              |
-| ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `api-key`  | `true`   | Your Playmatic API. Grab this from the settings page. key.                                                                                                                  |
-| `test-url` | `true`   | The URL of the deployment to test. This should be the full URL to the page where the playmatic tests should start (e.g. a login page).            |
-| `run-all-saved-tests` | `false` | Whether to run all saved tests. Defaults to `true`. |
-| `run-exploratory-test` | `false` | Whether to run an exploratory test based on changes made in the PR/commit. Defaults to `true`. |
+## Setup
 
-## Example
+### 1. Install Playmatic SDK
 
-* Vercel: [`examples/vercel.yml`](./examples/vercel.yml).
-* More coming soon! Please reach out to us if you are unsure on how to configure testing for any environment.
+Add the SDK to your project:
+
+```bash
+npm install -D @playmatic/sdk
+```
+
+### 2. Create API Key
+
+Get your API key from the Playmatic dashboard and add it to your repository secrets:
+
+**Repository Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+
+- **Name**: `PLAYMATIC_API_KEY`
+- **Value**: Your Playmatic API key
+
+### 3. Configuration File
+
+Ensure you have a `playmatic.config.ts` file in your repository:
+
+```typescript
+export default {
+  cacheSettings: {
+    actionTimeout: 10000,
+  },
+  defaultEnv: "development",
+  env: {
+    development: {
+      baseUrl: "http://localhost:3000",
+      vars: {
+        API_KEY: process.env.API_KEY || "dev-key",
+      },
+    },
+    staging: {
+      baseUrl: "https://staging.yourapp.com",
+      vars: {
+        API_KEY: process.env.STAGING_API_KEY,
+      },
+    },
+    production: {
+      baseUrl: "https://yourapp.com",
+      vars: {
+        API_KEY: process.env.PROD_API_KEY,
+      },
+    },
+  },
+};
+```
+
+## Migration from v0.x
+
+**v1.0.0 is a breaking change** from the API-based v0.x versions:
+
+- **Local execution**: Tests now run in GitHub Actions instead of remote servers
+- **Configuration required**: Must have `playmatic.config.ts` in repository  
+- **Environment-based**: Uses environment system instead of direct URLs
+- **New inputs**: Use `environment` instead of `test-url`
 
 ## Contributing
 
