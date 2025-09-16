@@ -12,17 +12,20 @@ export async function run(): Promise<void> {
     const baseUrlOverride = core.getInput("base-url-override");
     const testPaths = core.getInput("test-paths");
     const cliVersion = core.getInput("cli-version");
+    const ciNotifications = core.getInput("ci-notifications");
 
     core.info("Starting Playmatic E2E tests...");
     core.debug(`Environment: ${environment}`);
     core.debug(`Test paths: ${testPaths}`);
     core.debug(`CLI version: ${cliVersion}`);
+    core.debug(`CI notifications: ${ciNotifications}`);
     if (baseUrlOverride) {
       core.debug(`Base URL override: ${baseUrlOverride}`);
     }
 
-    // 1. Set API key environment variable
+    // 1. Set environment variables
     core.exportVariable("PLAYMATIC_API_KEY", apiKey);
+    core.exportVariable("PLAYMATIC_CI_NOTIFICATIONS", ciNotifications);
 
     // 2. Build CLI command using npx (no global installation needed)
     const args = [
