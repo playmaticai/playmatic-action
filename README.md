@@ -13,6 +13,7 @@ A GitHub Action to run Playmatic E2E tests using the CLI. Tests are executed loc
 - **URL overrides**: Dynamic base URL support for preview deployments
 - **Video recordings**: Recording URLs displayed in workflow output
 - **Full CLI output**: Complete test results visible in GitHub logs
+- **Team notifications**: Automatic Slack notifications with GitHub context and test results
 
 ## Prerequisites
 
@@ -52,6 +53,7 @@ jobs:
           environment: 'staging'  # Change to match your playmatic.config.ts
           test-paths: 'playmatic-tests'  # Change if tests are in different directory
           # base-url-override: ${{ github.event.deployment.url }}  # Uncomment for preview deployments
+          # ci-notifications: 'false'  # Uncomment to disable CI notifications
 ```
 
 ## Inputs
@@ -62,13 +64,41 @@ jobs:
 | `environment` | Environment from playmatic.config.ts | No | `staging` |
 | `base-url-override` | Override baseUrl for this run | No | - |
 | `test-paths` | Test files/directories to run | No | `playmatic-tests` |
-| `cli-version` | Playmatic CLI version to use | No | `0.1.5` |
+| `cli-version` | Playmatic CLI version to use | No | `0.1.9` |
+| `ci-notifications` | Enable Slack notifications for CI runs | No | `true` |
 
 ## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `success` | Whether tests passed (true/false) |
+
+## CI Notifications
+
+When `ci-notifications` is enabled (default: `true`), the action automatically sends rich Slack notifications to your team when tests complete. These notifications include:
+
+- **Test results summary** with pass/fail counts
+- **GitHub context** including repository, branch, commit SHA, and workflow name
+- **Pull request information** when applicable
+- **Direct links** to view detailed test results
+
+### Requirements for Notifications
+
+- **Slack integration**: Your team must have Slack connected in the Playmatic dashboard
+- **Bot permissions**: The Playmatic bot must be invited to the Slack channels where you want notifications
+- **Team settings**: Notifications respect your team's alert preferences (all results vs. issues only)
+
+### Disabling Notifications
+
+To disable CI notifications for a specific workflow:
+
+```yaml
+- name: Run Playmatic tests
+  uses: playmaticai/playmatic-action@v1
+  with:
+    api-key: ${{ secrets.PLAYMATIC_API_KEY }}
+    ci-notifications: 'false'
+```
 
 ## Setup
 
