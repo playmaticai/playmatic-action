@@ -22,6 +22,9 @@ inputs:
   cli-version:
     description: 'Playmatic CLI version'
     default: '0.1.8'
+  ci-notifications:
+    description: 'Enable CI notifications (defaults to true)'
+    default: 'true'
 
 outputs:
   success:
