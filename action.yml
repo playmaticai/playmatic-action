@@ -21,7 +21,7 @@ inputs:
     default: 'playmatic-tests'
   cli-version:
     description: 'Playmatic CLI version'
-    default: '0.1.9'
+    default: '0.1.10'
   ci-notifications:
     description: 'Enable CI notifications (defaults to true)'
     default: 'true'
